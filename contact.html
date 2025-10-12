@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>darkterminal | Contact</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0b0b0b;
+            --text: #ffffff;
+            --accent: #e07b7b;
+            --accent-glow: rgba(224, 123, 123, 0.3);
+            --badge-blue: #bfe1ff;
+            --badge-blue-text: #0c6bdc;
+            --highlight-red: #b83232;
+            --gray: #bdbdbd;
+            --gray-secondary: #9e9e9e;
+            --terminal-glow: rgba(224, 123, 123, 0.15);
+            --success: #4CAF50;
+            --warning: #ffbd2e;
+            --error: #ff5f56;
+            --card-bg: rgba(30, 30, 30, 0.7);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --neon-glow: 0 0 5px var(--accent), 0 0 10px var(--accent), 0 0 15px var(--accent);
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, Monaco, "Courier New", monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            padding: 1rem;
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(224, 123, 123, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(191, 225, 255, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 50% 80%, rgba(184, 50, 50, 0.03) 0%, transparent 25%);
+        }
+
+        /* Advanced Background Effects */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+            opacity: 0.03;
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+            opacity: 0.1;
+            animation: scan 6s linear infinite;
+            z-index: -1;
+        }
+
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatParticle 15s infinite linear;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Header & Navigation */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            position: relative;
+            gap: 1rem;
+            width: 100%;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .brand {
+            font-family: "Inter Tight", "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            color: var(--accent);
+            position: relative;
+            display: inline-block;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            z-index: 10;
+            text-shadow: 0 0 10px var(--accent-glow);
+            white-space: nowrap;
+        }
+
+        .brand::before {
+            content: '>> ';
+            opacity: 0.7;
+        }
+
+        .brand::after {
+            content: '';
+            position: absolute;
+            bottom: -0.25rem;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 100;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        nav {
+            display: flex;
+            gap: clamp(0.8rem, 2vw, 1.5rem);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: var(--text);
+            text-decoration: none;
+            font-style: italic;
+            letter-spacing: 0.03em;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(224, 123, 123, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-item:hover::before, .nav-item:focus::before {
+            left: 100%;
+        }
+
+        .nav-item:hover, .nav-item:focus {
+            color: var(--accent);
+            outline: none;
+            background: rgba(224, 123, 123, 0.1);
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+            background: rgba(224, 123, 123, 0.15);
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .deprecated {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 1rem;
+            position: relative;
+            flex: 1;
+            width: 100%;
+        }
+
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            width: 100%;
+        }
+
+        .hero {
+            font-family: "Inter Tight", "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            font-weight: 900;
+            font-size: clamp(2.2rem, 8vw, 4rem);
+            letter-spacing: 0.06em;
+            line-height: 1.1;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            text-shadow: 0 0 15px var(--accent-glow);
+            margin-top: 1rem;
+        }
+
+        .hero::before {
+            content: '>_ ';
+            color: var(--accent);
+            position: absolute;
+            left: -2.2rem;
+            opacity: 0.8;
+            font-size: 0.6em;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        /* Contact Layout */
+        .contact-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 3rem;
+            width: 100%;
+            margin-bottom: 3rem;
+        }
+
+        /* Contact Info Section */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .info-title {
+            font-family: "Inter Tight", sans-serif;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            font-size: 1.4rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .info-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.4rem;
+            left: 0;
+            width: 50%;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .info-card:hover .info-title::after {
+            width: 100%;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .contact-method:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .contact-icon {
+            width: 3rem;
+            height: 3rem;
+            background: rgba(224, 123, 123, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--accent);
+            flex-shrink: 0;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .contact-details {
+            flex: 1;
+        }
+
+        .contact-label {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.3rem;
+            font-size: 1.1rem;
+        }
+
+        .contact-value {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .contact-link {
+            color: var(--accent);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .contact-link:hover {
+            color: var(--text);
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        /* Social Links */
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: rgba(224, 123, 123, 0.1);
+            border-radius: 50%;
+            color: var(--accent);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .social-link:hover {
+            background: var(--accent);
+            color: var(--bg);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(224, 123, 123, 0.4);
+        }
+
+        /* Contact Form Section */
+        .contact-form-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2.5rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .form-title {
+            font-family: "Inter Tight", sans-serif;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: var(--accent);
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
+            text-shadow: 0 0 10px var(--accent-glow);
+            position: relative;
+            display: inline-block;
+        }
+
+        .form-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(15, 15, 15, 0.7);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            resize: vertical;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(224, 123, 123, 0.2);
+        }
+
+        .form-input:hover, .form-textarea:hover, .form-select:hover {
+            border-color: rgba(224, 123, 123, 0.3);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-submit {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: "Inter Tight", sans-serif;
+            box-shadow: 0 6px 20px rgba(224, 123, 123, 0.4);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .form-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .form-submit:hover::before {
+            left: 100%;
+        }
+
+        .form-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(224, 123, 123, 0.6);
+        }
+
+        .form-submit:active {
+            transform: translateY(-1px);
+        }
+
+        .form-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Form Status Messages */
+        .form-status {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        .form-status.success {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+            display: block;
+        }
+
+        .form-status.error {
+            background: rgba(255, 87, 87, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+            display: block;
+        }
+
+        /* Enhanced Terminal Window */
+        .terminal-window {
+            position: relative;
+            margin: 2rem 0;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .terminal-window:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .terminal-header {
+            background: rgba(20, 20, 20, 0.9);
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .terminal-button {
+            width: 0.9rem;
+            height: 0.9rem;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .terminal-button:hover {
+            transform: scale(1.2);
+        }
+
+        .terminal-button.close {
+            background: var(--error);
+        }
+
+        .terminal-button.minimize {
+            background: var(--warning);
+        }
+
+        .terminal-button.maximize {
+            background: var(--success);
+        }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--gray);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            letter-spacing: 0.05em;
+        }
+
+        .terminal-content {
+            padding: clamp(1.2rem, 3vw, 2rem);
+            background: rgba(15, 15, 15, 0.7);
+        }
+
+        .command {
+            margin-bottom: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            overflow-wrap: break-word;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .command:nth-child(1) { animation-delay: 0.2s; }
+        .command:nth-child(2) { animation-delay: 0.4s; }
+        .command:nth-child(3) { animation-delay: 0.6s; }
+        .command:nth-child(4) { animation-delay: 0.8s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .command-prompt {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .lead {
+            margin: 1.5rem 0;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            line-height: 1.6;
+            color: var(--gray);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .accent {
+            color: var(--accent);
+            font-weight: 600;
+            position: relative;
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .accent::after {
+            content: '';
+            position: absolute;
+            bottom: -0.125rem;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .highlight {
+            background: var(--highlight-red);
+            color: #fff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(184, 50, 50, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Cursor Animation */
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.2em;
+            background-color: var(--accent);
+            margin-left: 0.3rem;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+            color: var(--gray-secondary);
+            flex-wrap: wrap;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .status-dot {
+            width: 0.6rem;
+            height: 0.6rem;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+            box-shadow: 0 0 8px var(--accent-glow);
+            position: relative;
+        }
+
+        .status-dot::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0.6rem;
+            height: 0.6rem;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.online {
+            background: var(--success);
+        }
+
+        .status-dot.online::after {
+            background: var(--success);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            color: var(--gray-secondary);
+            font-size: 0.85rem;
+            width: 100%;
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            width: 6rem;
+            height: 6rem;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(224, 123, 123, 0.1) 0%, transparent 70%);
+            z-index: -1;
+            animation: float 25s infinite linear;
+            filter: blur(1px);
+        }
+
+        .floating-element:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            animation-duration: 30s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation-duration: 35s;
+            width: 9rem;
+            height: 9rem;
+        }
+
+        .floating-element:nth-child(3) {
+            top: 30%;
+            left: 70%;
+            animation-duration: 40s;
+            width: 5rem;
+            height: 5rem;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(1.5rem, 1.5rem) rotate(90deg) scale(1.1); }
+            50% { transform: translate(0, 3rem) rotate(180deg) scale(1); }
+            75% { transform: translate(-1.5rem, 1.5rem) rotate(270deg) scale(0.9); }
+            100% { transform: translate(0, 0) rotate(360deg) scale(1); }
+        }
+
+        /* Scroll to Top Button */
+        .scroll-top {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: var(--accent);
+            color: var(--bg);
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 100;
+            border: none;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 20px rgba(224, 123, 123, 0.4);
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 8px 25px rgba(224, 123, 123, 0.6);
+        }
+
+        /* Loading Bar */
+        .loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--badge-blue-text), var(--success));
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Focus styles for accessibility */
+        a:focus, .nav-item:focus, button:focus, input:focus, textarea:focus, select:focus {
+            outline: 3px solid rgba(11, 107, 220, 0.3);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* ULTRA RESPONSIVE DESIGN */
+        /* Extra Small Devices (phones, 480px and down) */
+        @media (max-width: 480px) {
+            body {
+                padding: 0.8rem;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+                position: absolute;
+                top: 1rem;
+                right: 0;
+            }
+            
+            nav {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                margin-top: 0.5rem;
+                background: rgba(15, 15, 15, 0.95);
+                backdrop-filter: blur(20px);
+                padding: 1.2rem;
+                border-radius: 8px;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                z-index: 99;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                border: 1px solid var(--glass-border);
+                gap: 0.5rem;
+            }
+            
+            nav.active {
+                display: flex;
+            }
+            
+            .nav-item {
+                padding: 0.8rem 0;
+                border-bottom: 1px solid var(--glass-border);
+                width: 100%;
+                text-align: center;
+                font-size: 1rem;
+            }
+            
+            .nav-item:last-child {
+                border-bottom: none;
+            }
+            
+            .hero {
+                margin-top: 0.5rem;
+            }
+            
+            .hero::before {
+                left: -1.8rem;
+                font-size: 0.5em;
+            }
+            
+            .contact-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .contact-form-section {
+                padding: 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            
+            .info-card {
+                padding: 1.5rem;
+            }
+            
+            .status-item {
+                min-width: 100%;
+                justify-content: center;
+            }
+            
+            .floating-element {
+                display: none;
+            }
+            
+            .terminal-content {
+                padding: 1rem;
+            }
+            
+            .lead {
+                padding: 1.2rem;
+            }
+            
+            .scroll-top {
+                bottom: 1rem;
+                right: 1rem;
+                width: 2.8rem;
+                height: 2.8rem;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Small Devices (phones, 481px to 767px) */
+        @media (min-width: 481px) and (max-width: 767px) {
+            body {
+                padding: 1.2rem;
+            }
+            
+            header {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .hero::before {
+                left: -2rem;
+            }
+            
+            .contact-layout {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            
+            .contact-form-section {
+                padding: 2rem;
+            }
+        }
+
+        /* Medium Devices (tablets, 768px to 1023px) */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            body {
+                padding: 1.5rem 2rem;
+                max-width: 95%;
+            }
+            
+            .hero {
+                font-size: clamp(2.8rem, 6vw, 3.5rem);
+            }
+            
+            .contact-layout {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .contact-form-section {
+                padding: 2.5rem;
+            }
+        }
+
+        /* Large Devices (desktops, 1024px and up) */
+        @media (min-width: 1024px) {
+            body {
+                padding: 2rem 3rem;
+                max-width: 1200px;
+            }
+            
+            .hero {
+                font-size: 3.8rem;
+            }
+            
+            .lead {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Extra Large Devices (large desktops, 1440px and up) */
+        @media (min-width: 1440px) {
+            body {
+                max-width: 1300px;
+            }
+            
+            .hero {
+                font-size: 4.2rem;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .scroll-top, .mobile-menu-toggle, .floating-element, .scanline, .particles-container {
+                display: none !important;
+            }
+            
+            body {
+                background: white;
+                color: black;
+                font-size: 12pt;
+            }
+            
+            .info-card, .contact-form-section {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .scroll-top:hover, .info-card:hover, .social-link:hover, .form-submit:hover {
+                transform: none;
+            }
+        }
+
+        /* High Contrast Mode Support */
+        @media (prefers-contrast: high) {
+            :root {
+                --bg: #000000;
+                --text: #ffffff;
+                --accent: #ff0000;
+                --highlight-red: #ff0000;
+                --glass-bg: rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        /* Dark Mode Optimization (already dark, but for consistency) */
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #0b0b0b;
+                --text: #ffffff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-bar" id="loadingBar"></div>
+    <div class="scanline"></div>
+    <div class="matrix-bg" id="matrixBg"></div>
+    <div class="particles-container" id="particlesContainer"></div>
+    
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    
+    <header>
+        <div class="brand">darkterminal</div>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav id="mainNav">
+            <a href="index.html" class="nav-item">home</a>
+            <a href="services.html" class="nav-item">services</a>
+            <a href="projects.html" class="nav-item">projects</a>
+            <a href="about.html" class="nav-item">whoami</a>
+            <a href="contact.html" class="nav-item active">contact</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="hero-section">
+            <h1 class="hero" id="heroText">Get In Touch<span class="cursor"></span></h1>
+            <p class="hero-subtitle">Let's discuss your next project or collaboration. I'm always excited to work on new challenges.</p>
+            
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-button close"></div>
+                    <div class="terminal-button minimize"></div>
+                    <div class="terminal-button maximize"></div>
+                    <div class="terminal-title">darkterminal@contact: ~</div>
+                </div>
+                <div class="terminal-content">
+                    <div class="command">
+                        <span class="command-prompt">darkterminal@contact:~$</span> cat contact_info.txt
+                    </div>
+                    <p class="lead">
+                        Ready to start your next project? Whether you need <span class="accent">web development</span>, <span class="accent">UI/UX design</span>, or <span class="accent">technical consulting</span>, I'm here to help bring your ideas to life. Let's create something amazing together.
+                    </p>
+                    <div class="command">
+                        <span class="command-prompt">darkterminal@contact:~$</span> <span id="typingCommand"></span><span class="cursor"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="contact-layout">
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <div class="info-card">
+                    <h3 class="info-title">Contact Information</h3>
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <div class="contact-label">Email</div>
+                            <a href="mailto:contact@darkterminal.dev" class="contact-value contact-link">contact@darkterminal.dev</a>
+                        </div>
+                    </div>
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <div class="contact-label">Phone</div>
+                            <a href="tel:+621234567890" class="contact-value contact-link">+62 123 456 7890</a>
+                        </div>
+                    </div>
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <div class="contact-label">Location</div>
+                            <div class="contact-value">Jakarta, Indonesia</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3 class="info-title">Connect With Me</h3>
+                    <p style="color: var(--gray); margin-bottom: 1.5rem;">Follow me on social media for updates and insights.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Dribbble">
+                            <i class="fab fa-dribbble"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="CodePen">
+                            <i class="fab fa-codepen"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3 class="info-title">Response Time</h3>
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="contact-details">
+                            <div class="contact-label">Typically Responds</div>
+                            <div class="contact-value">Within 24 hours</div>
+                        </div>
+                    </div>
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <div class="contact-label">Availability</div>
+                            <div class="contact-value">Monday - Friday, 9AM - 6PM WIB</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Form -->
+            <div class="contact-form-section">
+                <h2 class="form-title">Send a Message</h2>
+                
+                <!-- Form Status Messages -->
+                <div id="form-status" class="form-status"></div>
+                
+                <!-- Web3Forms Contact Form -->
+                <form id="contact-form" action="https://api.web3forms.com/submit" method="POST">
+                    <!-- Web3Forms Access Key -->
+                    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+                    <!-- Subject -->
+                    <input type="hidden" name="subject" value="New Contact Form Submission from darkterminal">
+                    <!-- Redirect after submission -->
+                    <input type="hidden" name="redirect" value="https://darkterminal.dev/thank-you">
+                    <!-- HoneyPot Spam Protection -->
+                    <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Full Name *</label>
+                            <input type="text" id="name" name="name" class="form-input" required placeholder="Enter your full name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address *</label>
+                            <input type="email" id="email" name="email" class="form-input" required placeholder="your.email@example.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject" class="form-label">Subject *</label>
+                        <select id="subject" name="subject" class="form-select" required>
+                            <option value="" disabled selected>Select a subject</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="UI/UX Design">UI/UX Design</option>
+                            <option value="Mobile Development">Mobile Development</option>
+                            <option value="Consulting">Technical Consulting</option>
+                            <option value="Partnership">Partnership Opportunity</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="budget" class="form-label">Project Budget (USD)</label>
+                        <select id="budget" name="budget" class="form-select">
+                            <option value="" selected>Select budget range</option>
+                            <option value="<$1,000">Less than $1,000</option>
+                            <option value="$1,000 - $5,000">$1,000 - $5,000</option>
+                            <option value="$5,000 - $10,000">$5,000 - $10,000</option>
+                            <option value="$10,000 - $25,000">$10,000 - $25,000</option>
+                            <option value="$25,000+">$25,000+</option>
+                            <option value="To be discussed">To be discussed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message" class="form-label">Message *</label>
+                        <textarea id="message" name="message" class="form-textarea" required placeholder="Tell me about your project, timeline, and any specific requirements..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="form-submit" id="submit-btn">
+                        <span id="submit-text">Send Message</span>
+                        <span id="submit-loading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i> Sending...
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-dot online"></div>
+                <span>Available for new projects</span>
+            </div>
+            <div class="status-item">
+                <i class="fas fa-code"></i>
+                <span>Response time: < 24 hours</span>
+            </div>
+            <div class="status-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Jakarta, Indonesia (WIB UTC+7)</span>
+            </div>
+            <div class="status-item">
+                <i class="fas fa-clock"></i>
+                <span>Last online: Just now</span>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2023 darkterminal • Premium Digital Craftsmanship</p>
+        <p>All systems operational • Last updated: <span id="currentDate"></span></p>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date in footer
+            const currentDate = new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            document.getElementById('currentDate').textContent = currentDate;
+            
+            // Create matrix background effect
+            function createMatrixBackground() {
+                const canvas = document.createElement('canvas');
+                const container = document.getElementById('matrixBg');
+                if (!container) return;
+                
+                container.appendChild(canvas);
+                const ctx = canvas.getContext('2d');
+                
+                function resizeCanvas() {
+                    canvas.width = container.clientWidth;
+                    canvas.height = container.clientHeight;
+                }
+                
+                resizeCanvas();
+                
+                const chars = "01";
+                const charArray = chars.split("");
+                const fontSize = 14;
+                const columns = canvas.width / fontSize;
+                const drops = [];
+                
+                for(let x = 0; x < columns; x++) {
+                    drops[x] = 1;
+                }
+                
+                function draw() {
+                    ctx.fillStyle = "rgba(11, 11, 11, 0.04)";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    ctx.fillStyle = "#e07b7b";
+                    ctx.font = fontSize + "px 'IBM Plex Mono'";
+                    
+                    for(let i = 0; i < drops.length; i++) {
+                        const text = charArray[Math.floor(Math.random() * charArray.length)];
+                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                        
+                        if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
+                        
+                        drops[i]++;
+                    }
+                }
+                
+                setInterval(draw, 33);
+                
+                window.addEventListener('resize', resizeCanvas);
+            }
+            
+            // Create floating particles
+            function createParticles() {
+                const container = document.getElementById('particlesContainer');
+                if (!container) return;
+                
+                const particleCount = 25;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    // Random properties
+                    const size = Math.random() * 2 + 1;
+                    const posX = Math.random() * 100;
+                    const delay = Math.random() * 15;
+                    const duration = Math.random() * 10 + 15;
+                    
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.left = `${posX}%`;
+                    particle.style.animationDelay = `${delay}s`;
+                    particle.style.animationDuration = `${duration}s`;
+                    
+                    container.appendChild(particle);
+                }
+            }
+            
+            // Mobile menu functionality
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mainNav = document.getElementById('mainNav');
+            
+            if (mobileMenuToggle && mainNav) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    mainNav.classList.toggle('active');
+                    const icon = this.querySelector('i');
+                    if (mainNav.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                        this.setAttribute('aria-expanded', 'true');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                        this.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (mainNav && mainNav.classList.contains('active') && 
+                    !mainNav.contains(event.target) && 
+                    mobileMenuToggle && !mobileMenuToggle.contains(event.target)) {
+                    mainNav.classList.remove('active');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+            
+            // Close mobile menu on escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && mainNav && mainNav.classList.contains('active')) {
+                    mainNav.classList.remove('active');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+            
+            // Hero typing animation
+            const heroText = document.getElementById('heroText');
+            if (heroText) {
+                const originalHeroText = "Get In Touch";
+                heroText.innerHTML = '';
+                
+                let heroIndex = 0;
+                function typeHero() {
+                    if (heroIndex < originalHeroText.length) {
+                        heroText.innerHTML += originalHeroText.charAt(heroIndex);
+                        heroIndex++;
+                        setTimeout(typeHero, 120);
+                    } else {
+                        heroText.innerHTML += '<span class="cursor"></span>';
+                    }
+                }
+                
+                // Start typing effect after a short delay
+                setTimeout(typeHero, 800);
+            }
+            
+            // Terminal command typing animation
+            const typingCommand = document.getElementById('typingCommand');
+            if (typingCommand) {
+                const commands = [
+                    "node contact_form.js",
+                    "npm run contact",
+                    "git status contact/",
+                    "echo 'Ready to connect...'",
+                    "cat response_times.txt"
+                ];
+                let commandIndex = 0;
+                let charIndex = 0;
+                
+                function typeCommand() {
+                    if (charIndex < commands[commandIndex].length) {
+                        typingCommand.textContent += commands[commandIndex].charAt(charIndex);
+                        charIndex++;
+                        setTimeout(typeCommand, 50);
+                    } else {
+                        setTimeout(() => {
+                            typingCommand.textContent = '';
+                            charIndex = 0;
+                            commandIndex = (commandIndex + 1) % commands.length;
+                            setTimeout(typeCommand, 800);
+                        }, 2000);
+                    }
+                }
+                
+                // Start command typing after a delay
+                setTimeout(typeCommand, 3000);
+            }
+            
+            // Start background effects
+            setTimeout(createMatrixBackground, 100);
+            setTimeout(createParticles, 200);
+            
+            // Scroll to top functionality
+            const scrollTopBtn = document.getElementById('scrollTop');
+            
+            if (scrollTopBtn) {
+                window.addEventListener('scroll', function() {
+                    if (window.pageYOffset > 300) {
+                        scrollTopBtn.classList.add('visible');
+                    } else {
+                        scrollTopBtn.classList.remove('visible');
+                    }
+                });
+                
+                scrollTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            // Loading bar animation
+            const loadingBar = document.getElementById('loadingBar');
+            if (loadingBar) {
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 2;
+                    loadingBar.style.width = progress + '%';
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            loadingBar.style.opacity = '0';
+                            setTimeout(() => {
+                                loadingBar.style.display = 'none';
+                            }, 500);
+                        }, 500);
+                    }
+                }, 30);
+            }
+            
+            // Web3Forms Integration
+            const contactForm = document.getElementById('contact-form');
+            const formStatus = document.getElementById('form-status');
+            const submitBtn = document.getElementById('submit-btn');
+            const submitText = document.getElementById('submit-text');
+            const submitLoading = document.getElementById('submit-loading');
+            
+            if (contactForm) {
+                contactForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    // Show loading state
+                    submitText.style.display = 'none';
+                    submitLoading.style.display = 'inline';
+                    submitBtn.disabled = true;
+                    
+                    // Clear previous status
+                    formStatus.className = 'form-status';
+                    formStatus.style.display = 'none';
+                    
+                    // Get form data
+                    const formData = new FormData(contactForm);
+                    
+                    try {
+                        const response = await fetch(contactForm.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (response.ok && result.success) {
+                            // Success
+                            formStatus.textContent = 'Thank you! Your message has been sent successfully.';
+                            formStatus.className = 'form-status success';
+                            formStatus.style.display = 'block';
+                            contactForm.reset();
+                        } else {
+                            // Error
+                            throw new Error(result.message || 'Something went wrong');
+                        }
+                    } catch (error) {
+                        // Error handling
+                        formStatus.textContent = 'Sorry, there was an error sending your message. Please try again or contact me directly at contact@darkterminal.dev';
+                        formStatus.className = 'form-status error';
+                        formStatus.style.display = 'block';
+                        console.error('Form submission error:', error);
+                    } finally {
+                        // Reset button state
+                        submitText.style.display = 'inline';
+                        submitLoading.style.display = 'none';
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+            
+            // Add animation to elements when they come into view
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe info cards
+            const animatedElements = document.querySelectorAll('.info-card');
+            animatedElements.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(30px)';
+                element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(element);
+            });
+            
+            // Handle responsive images (if any were added in the future)
+            document.querySelectorAll('img').forEach(img => {
+                img.loading = 'lazy';
+            });
+            
+            // Performance optimization: Reduce animations if user prefers reduced motion
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelectorAll('*').forEach(el => {
+                    el.style.animationPlayState = 'paused';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

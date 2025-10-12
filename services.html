@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>darkterminal | Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0b0b0b;
+            --text: #ffffff;
+            --accent: #e07b7b;
+            --accent-glow: rgba(224, 123, 123, 0.3);
+            --badge-blue: #bfe1ff;
+            --badge-blue-text: #0c6bdc;
+            --highlight-red: #b83232;
+            --gray: #bdbdbd;
+            --gray-secondary: #9e9e9e;
+            --terminal-glow: rgba(224, 123, 123, 0.15);
+            --success: #4CAF50;
+            --warning: #ffbd2e;
+            --error: #ff5f56;
+            --card-bg: rgba(30, 30, 30, 0.7);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --neon-glow: 0 0 5px var(--accent), 0 0 10px var(--accent), 0 0 15px var(--accent);
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, Monaco, "Courier New", monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            padding: 1rem;
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(224, 123, 123, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(191, 225, 255, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 50% 80%, rgba(184, 50, 50, 0.03) 0%, transparent 25%);
+        }
+
+        /* Advanced Background Effects */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+            opacity: 0.03;
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+            opacity: 0.1;
+            animation: scan 6s linear infinite;
+            z-index: -1;
+        }
+
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatParticle 15s infinite linear;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Header & Navigation - FIXED */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            position: relative;
+            gap: 1rem;
+            width: 100%;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .brand {
+            font-family: "Inter Tight", "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            color: var(--accent);
+            position: relative;
+            display: inline-block;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            z-index: 10;
+            text-shadow: 0 0 10px var(--accent-glow);
+            white-space: nowrap;
+        }
+
+        .brand::before {
+            content: '>> ';
+            opacity: 0.7;
+        }
+
+        .brand::after {
+            content: '';
+            position: absolute;
+            bottom: -0.25rem;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 100;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        nav {
+            display: flex;
+            gap: clamp(0.8rem, 2vw, 1.5rem);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: var(--text);
+            text-decoration: none;
+            font-style: italic;
+            letter-spacing: 0.03em;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(224, 123, 123, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-item:hover::before, .nav-item:focus::before {
+            left: 100%;
+        }
+
+        .nav-item:hover, .nav-item:focus {
+            color: var(--accent);
+            outline: none;
+            background: rgba(224, 123, 123, 0.1);
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+            background: rgba(224, 123, 123, 0.15);
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .deprecated {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+
+        /* Main Content - IMPROVED */
+        main {
+            margin-top: 1rem;
+            position: relative;
+            flex: 1;
+            width: 100%;
+        }
+
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            width: 100%;
+        }
+
+        .hero {
+            font-family: "Inter Tight", "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            font-weight: 900;
+            font-size: clamp(2.2rem, 8vw, 4rem);
+            letter-spacing: 0.06em;
+            line-height: 1.1;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            text-shadow: 0 0 15px var(--accent-glow);
+            margin-top: 1rem;
+        }
+
+        .hero::before {
+            content: '>_ ';
+            color: var(--accent);
+            position: absolute;
+            left: -2.2rem;
+            opacity: 0.8;
+            font-size: 0.6em;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        /* Enhanced Terminal Window */
+        .terminal-window {
+            position: relative;
+            margin: 2rem 0;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .terminal-window:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .terminal-header {
+            background: rgba(20, 20, 20, 0.9);
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .terminal-button {
+            width: 0.9rem;
+            height: 0.9rem;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .terminal-button:hover {
+            transform: scale(1.2);
+        }
+
+        .terminal-button.close {
+            background: var(--error);
+        }
+
+        .terminal-button.minimize {
+            background: var(--warning);
+        }
+
+        .terminal-button.maximize {
+            background: var(--success);
+        }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--gray);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            letter-spacing: 0.05em;
+        }
+
+        .terminal-content {
+            padding: clamp(1.2rem, 3vw, 2rem);
+            background: rgba(15, 15, 15, 0.7);
+        }
+
+        .command {
+            margin-bottom: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            overflow-wrap: break-word;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .command:nth-child(1) { animation-delay: 0.2s; }
+        .command:nth-child(2) { animation-delay: 0.4s; }
+        .command:nth-child(3) { animation-delay: 0.6s; }
+        .command:nth-child(4) { animation-delay: 0.8s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .command-prompt {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .lead {
+            margin: 1.5rem 0;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            line-height: 1.6;
+            color: var(--gray);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .accent {
+            color: var(--accent);
+            font-weight: 600;
+            position: relative;
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .accent::after {
+            content: '';
+            position: absolute;
+            bottom: -0.125rem;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .highlight {
+            background: var(--highlight-red);
+            color: #fff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(184, 50, 50, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .highlight::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .highlight:hover::before {
+            left: 100%;
+        }
+
+        /* Services Section */
+        .services {
+            margin: 3rem 0;
+            width: 100%;
+        }
+
+        .section-title {
+            font-family: "Inter Tight", sans-serif;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: var(--accent);
+            position: relative;
+            display: inline-block;
+            font-size: clamp(1.4rem, 5vw, 2rem);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .service-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s ease;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(224, 123, 123, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1.2rem;
+            text-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .service-title {
+            font-family: "Inter Tight", sans-serif;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-size: clamp(1.2rem, 3vw, 1.4rem);
+            position: relative;
+            display: inline-block;
+        }
+
+        .service-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.4rem;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .service-card:hover .service-title::after {
+            width: 100%;
+            left: 0;
+        }
+
+        .service-description {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            line-height: 1.6;
+        }
+
+        .service-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 1.8rem;
+        }
+
+        .service-feature {
+            color: var(--gray-secondary);
+            margin-bottom: 0.6rem;
+            font-size: 0.9rem;
+            position: relative;
+            padding-left: 1.3rem;
+        }
+
+        .service-feature::before {
+            content: '▸';
+            color: var(--accent);
+            position: absolute;
+            left: 0;
+        }
+
+        .service-price {
+            font-family: "Inter Tight", sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.2rem;
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .service-cta {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--bg);
+            text-decoration: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 15px rgba(224, 123, 123, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .service-cta:hover::before {
+            left: 100%;
+        }
+
+        .service-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(224, 123, 123, 0.5);
+        }
+
+        /* Process Section */
+        .process {
+            margin: 3rem 0;
+            width: 100%;
+        }
+
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .process-step:hover {
+            transform: translateX(8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .step-number {
+            background: var(--accent);
+            color: var(--bg);
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Inter Tight", sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-family: "Inter Tight", sans-serif;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            color: var(--text);
+            font-size: 1.2rem;
+        }
+
+        .step-description {
+            color: var(--gray);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin: 3rem 0;
+            text-align: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-title {
+            font-family: "Inter Tight", sans-serif;
+            font-weight: 800;
+            margin-bottom: 1.2rem;
+            color: var(--text);
+            font-size: clamp(1.6rem, 5vw, 2.2rem);
+        }
+
+        .cta-description {
+            color: var(--gray);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--bg);
+            text-decoration: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            box-shadow: 0 6px 20px rgba(224, 123, 123, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(224, 123, 123, 0.6);
+        }
+
+        /* Cursor Animation */
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.2em;
+            background-color: var(--accent);
+            margin-left: 0.3rem;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+            color: var(--gray-secondary);
+            flex-wrap: wrap;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .status-dot {
+            width: 0.6rem;
+            height: 0.6rem;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+            box-shadow: 0 0 8px var(--accent-glow);
+            position: relative;
+        }
+
+        .status-dot::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0.6rem;
+            height: 0.6rem;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.online {
+            background: var(--success);
+        }
+
+        .status-dot.online::after {
+            background: var(--success);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            color: var(--gray-secondary);
+            font-size: 0.85rem;
+            width: 100%;
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            width: 6rem;
+            height: 6rem;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(224, 123, 123, 0.1) 0%, transparent 70%);
+            z-index: -1;
+            animation: float 25s infinite linear;
+            filter: blur(1px);
+        }
+
+        .floating-element:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            animation-duration: 30s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation-duration: 35s;
+            width: 9rem;
+            height: 9rem;
+        }
+
+        .floating-element:nth-child(3) {
+            top: 30%;
+            left: 70%;
+            animation-duration: 40s;
+            width: 5rem;
+            height: 5rem;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(1.5rem, 1.5rem) rotate(90deg) scale(1.1); }
+            50% { transform: translate(0, 3rem) rotate(180deg) scale(1); }
+            75% { transform: translate(-1.5rem, 1.5rem) rotate(270deg) scale(0.9); }
+            100% { transform: translate(0, 0) rotate(360deg) scale(1); }
+        }
+
+        /* Scroll to Top Button */
+        .scroll-top {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: var(--accent);
+            color: var(--bg);
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 100;
+            border: none;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 20px rgba(224, 123, 123, 0.4);
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 8px 25px rgba(224, 123, 123, 0.6);
+        }
+
+        /* Loading Bar */
+        .loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--badge-blue-text), var(--success));
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Focus styles for accessibility */
+        a:focus, .nav-item:focus, button:focus {
+            outline: 3px solid rgba(11, 107, 220, 0.3);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* ULTRA RESPONSIVE DESIGN - IMPROVED */
+        /* Extra Small Devices (phones, 480px and down) */
+        @media (max-width: 480px) {
+            body {
+                padding: 0.8rem;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+                position: absolute;
+                top: 1rem;
+                right: 0;
+            }
+            
+            nav {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                margin-top: 0.5rem;
+                background: rgba(15, 15, 15, 0.95);
+                backdrop-filter: blur(20px);
+                padding: 1.2rem;
+                border-radius: 8px;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                z-index: 99;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                border: 1px solid var(--glass-border);
+                gap: 0.5rem;
+            }
+            
+            nav.active {
+                display: flex;
+            }
+            
+            .nav-item {
+                padding: 0.8rem 0;
+                border-bottom: 1px solid var(--glass-border);
+                width: 100%;
+                text-align: center;
+                font-size: 1rem;
+            }
+            
+            .nav-item:last-child {
+                border-bottom: none;
+            }
+            
+            .hero {
+                margin-top: 0.5rem;
+            }
+            
+            .hero::before {
+                left: -1.8rem;
+                font-size: 0.5em;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+            }
+            
+            .service-card {
+                padding: 1.5rem 1.2rem;
+            }
+            
+            .process-step {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+                padding: 1.2rem;
+            }
+            
+            .status-item {
+                min-width: 100%;
+                justify-content: center;
+            }
+            
+            .floating-element {
+                display: none;
+            }
+            
+            .terminal-content {
+                padding: 1rem;
+            }
+            
+            .lead {
+                padding: 1.2rem;
+            }
+            
+            .scroll-top {
+                bottom: 1rem;
+                right: 1rem;
+                width: 2.8rem;
+                height: 2.8rem;
+                font-size: 1.2rem;
+            }
+            
+            .cta-section {
+                padding: 2rem 1.2rem;
+            }
+        }
+
+        /* Small Devices (phones, 481px to 767px) */
+        @media (min-width: 481px) and (max-width: 767px) {
+            body {
+                padding: 1.2rem;
+            }
+            
+            header {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .hero::before {
+                left: -2rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .process-step {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Medium Devices (tablets, 768px to 1023px) */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            body {
+                padding: 1.5rem 2rem;
+                max-width: 95%;
+            }
+            
+            .hero {
+                font-size: clamp(2.8rem, 6vw, 3.5rem);
+            }
+            
+            .services-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .service-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        /* Large Devices (desktops, 1024px and up) */
+        @media (min-width: 1024px) {
+            body {
+                padding: 2rem 3rem;
+                max-width: 1200px;
+            }
+            
+            .hero {
+                font-size: 3.8rem;
+            }
+            
+            .lead {
+                font-size: 1.1rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 2rem;
+            }
+        }
+
+        /* Extra Large Devices (large desktops, 1440px and up) */
+        @media (min-width: 1440px) {
+            body {
+                max-width: 1300px;
+            }
+            
+            .hero {
+                font-size: 4.2rem;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .scroll-top, .mobile-menu-toggle, .floating-element, .scanline, .particles-container {
+                display: none !important;
+            }
+            
+            body {
+                background: white;
+                color: black;
+                font-size: 12pt;
+            }
+            
+            .service-card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .scroll-top:hover, .service-card:hover, .process-step:hover {
+                transform: none;
+            }
+        }
+
+        /* High Contrast Mode Support */
+        @media (prefers-contrast: high) {
+            :root {
+                --bg: #000000;
+                --text: #ffffff;
+                --accent: #ff0000;
+                --highlight-red: #ff0000;
+                --glass-bg: rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        /* Dark Mode Optimization (already dark, but for consistency) */
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #0b0b0b;
+                --text: #ffffff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-bar" id="loadingBar"></div>
+    <div class="scanline"></div>
+    <div class="matrix-bg" id="matrixBg"></div>
+    <div class="particles-container" id="particlesContainer"></div>
+    
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    
+    <header>
+        <div class="brand">darkterminal</div>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu">
+            <i class="fas fa-bars"></i>
+        </button>
+        <nav id="mainNav">
+            <a href="index.html" class="nav-item">home</a>
+            <a href="services.html" class="nav-item active">services</a>
+            <a href="projects.html" class="nav-item">projects</a>
+            <a href="about.html" class="nav-item">whoami</a>
+            <a href="contact.html" class="nav-item">contact</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="hero-section">
+            <h1 class="hero" id="heroText">Services & Solutions<span class="cursor"></span></h1>
+            <p class="hero-subtitle">Premium digital craftsmanship for exceptional user experiences</p>
+            
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-button close"></div>
+                    <div class="terminal-button minimize"></div>
+                    <div class="terminal-button maximize"></div>
+                    <div class="terminal-title">darkterminal@services: ~</div>
+                </div>
+                <div class="terminal-content">
+                    <div class="command">
+                        <span class="command-prompt">darkterminal@services:~$</span> cat services.txt
+                    </div>
+                    <p class="lead">
+                        I offer <span class="accent">premium digital craftsmanship</span> for businesses and individuals seeking exceptional digital experiences. With a focus on <span class="highlight">performance</span>, <span class="highlight">security</span>, and <span class="highlight">user experience</span>, I build solutions that stand the test of time.
+                    </p>
+                    <div class="command">
+                        <span class="command-prompt">darkterminal@services:~$</span> <span id="typingCommand"></span><span class="cursor"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="services">
+            <h2 class="section-title">Service Offerings</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="service-title">Web Development</h3>
+                    <p class="service-description">
+                        Custom web applications built with modern technologies and best practices for performance and scalability.
+                    </p>
+                    <ul class="service-features">
+                        <li class="service-feature">React/Vue.js Applications</li>
+                        <li class="service-feature">Node.js Backend Development</li>
+                        <li class="service-feature">Responsive Design Implementation</li>
+                        <li class="service-feature">API Development & Integration</li>
+                        <li class="service-feature">Performance Optimization</li>
+                    </ul>
+                    <div class="service-price">Starting at $3,500</div>
+                    <button class="service-cta">Request Quote</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="service-title">UI/UX Design</h3>
+                    <p class="service-description">
+                        User-centered design solutions that combine aesthetics with functionality for exceptional user experiences.
+                    </p>
+                    <ul class="service-features">
+                        <li class="service-feature">User Interface Design</li>
+                        <li class="service-feature">User Experience Research</li>
+                        <li class="service-feature">Wireframing & Prototyping</li>
+                        <li class="service-feature">Design Systems</li>
+                        <li class="service-feature">Usability Testing</li>
+                    </ul>
+                    <div class="service-price">Starting at $2,800</div>
+                    <button class="service-cta">Request Quote</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="service-title">Mobile Development</h3>
+                    <p class="service-description">
+                        Cross-platform mobile applications that deliver native-like performance with modern development approaches.
+                    </p>
+                    <ul class="service-features">
+                        <li class="service-feature">React Native Development</li>
+                        <li class="service-feature">Flutter Applications</li>
+                        <li class="service-feature">PWA Development</li>
+                        <li class="service-feature">App Store Deployment</li>
+                        <li class="service-feature">Mobile UX Optimization</li>
+                    </ul>
+                    <div class="service-price">Starting at $5,000</div>
+                    <button class="service-cta">Request Quote</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h3 class="service-title">Cloud Solutions</h3>
+                    <p class="service-description">
+                        Scalable cloud infrastructure and deployment solutions to ensure your applications run smoothly and securely.
+                    </p>
+                    <ul class="service-features">
+                        <li class="service-feature">AWS/Azure/GCP Setup</li>
+                        <li class="service-feature">CI/CD Pipeline Implementation</li>
+                        <li class="service-feature">Containerization with Docker</li>
+                        <li class="service-feature">Serverless Architecture</li>
+                        <li class="service-feature">Infrastructure as Code</li>
+                    </ul>
+                    <div class="service-price">Starting at $2,000</div>
+                    <button class="service-cta">Request Quote</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="service-title">Security Audit</h3>
+                    <p class="service-description">
+                        Comprehensive security assessments and implementations to protect your digital assets from modern threats.
+                    </p>
+                    <ul class="service-features">
+                        <li class="service-feature">Code Security Review</li>
+                        <li class="service-feature">Penetration Testing</li>
+                        <li class="service-feature">Security Best Practices</li>
+                        <li class="service-feature">Compliance Assessment</li>
+                        <li class="service-feature">Security Monitoring Setup</li>
+                    </ul>
+                    <div class="service-price">Starting at $1,500</div>
+                    <button class="service-cta">Request Quote</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="service-title">Technical Consulting</h3>
+                    <p class="service-description">
+                        Strategic technology guidance to help your business make informed decisions and optimize your digital presence.
+                    </p>
+                    <ul class="service-features">
+                        <li class="service-feature">Technology Stack Selection</li>
+                        <li class="service-feature">Architecture Planning</li>
+                        <li class="service-feature">Team Mentoring</li>
+                        <li class="service-feature">Code Review</li>
+                        <li class="service-feature">Technical Documentation</li>
+                    </ul>
+                    <div class="service-price">$150/hour</div>
+                    <button class="service-cta">Request Quote</button>
+                </div>
+            </div>
+        </section>
+        
+        <section class="process">
+            <h2 class="section-title">Development Process</h2>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Discovery & Planning</h3>
+                        <p class="step-description">
+                            We begin with a comprehensive analysis of your requirements, goals, and target audience. This phase includes technical feasibility assessment, project scope definition, and timeline establishment.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Design & Prototyping</h3>
+                        <p class="step-description">
+                            Creating wireframes, mockups, and interactive prototypes to visualize the final product. We focus on user experience, accessibility, and brand consistency throughout this phase.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Development & Implementation</h3>
+                        <p class="step-description">
+                            Agile development with regular updates and iterations. We build using modern technologies, following best practices for code quality, performance, and security.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Testing & Quality Assurance</h3>
+                        <p class="step-description">
+                            Rigorous testing across multiple devices and browsers. We conduct functionality testing, performance testing, security audits, and user acceptance testing.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">05</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Deployment & Launch</h3>
+                        <p class="step-description">
+                            Smooth deployment to production environment with minimal downtime. We ensure proper configuration, monitoring setup, and post-launch support.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">06</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Maintenance & Support</h3>
+                        <p class="step-description">
+                            Ongoing maintenance, updates, and technical support to ensure your digital product continues to perform optimally and adapts to changing requirements.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="cta-section">
+            <h2 class="cta-title">Ready to Start Your Project?</h2>
+            <p class="cta-description">
+                Let's discuss how we can transform your ideas into exceptional digital experiences. Contact me for a free consultation and project estimate.
+            </p>
+            <button class="cta-button">Get In Touch</button>
+        </section>
+        
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-dot online"></div>
+                <span>Available for new projects</span>
+            </div>
+            <div class="status-item">
+                <i class="fas fa-code"></i>
+                <span>Currently working on 3 projects</span>
+            </div>
+            <div class="status-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Jakarta, Indonesia</span>
+            </div>
+            <div class="status-item">
+                <i class="fas fa-clock"></i>
+                <span>Response time: < 24 hours</span>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2023 darkterminal • Premium Digital Craftsmanship Services</p>
+        <p>All systems operational • Last updated: <span id="currentDate"></span> • <span id="visitorCount">001023</span> visitors</p>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date in footer
+            const currentDate = new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            document.getElementById('currentDate').textContent = currentDate;
+            
+            // Create matrix background effect
+            function createMatrixBackground() {
+                const canvas = document.createElement('canvas');
+                const container = document.getElementById('matrixBg');
+                if (!container) return;
+                
+                container.appendChild(canvas);
+                const ctx = canvas.getContext('2d');
+                
+                function resizeCanvas() {
+                    canvas.width = container.clientWidth;
+                    canvas.height = container.clientHeight;
+                }
+                
+                resizeCanvas();
+                
+                const chars = "01";
+                const charArray = chars.split("");
+                const fontSize = 14;
+                const columns = canvas.width / fontSize;
+                const drops = [];
+                
+                for(let x = 0; x < columns; x++) {
+                    drops[x] = 1;
+                }
+                
+                function draw() {
+                    ctx.fillStyle = "rgba(11, 11, 11, 0.04)";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    ctx.fillStyle = "#e07b7b";
+                    ctx.font = fontSize + "px 'IBM Plex Mono'";
+                    
+                    for(let i = 0; i < drops.length; i++) {
+                        const text = charArray[Math.floor(Math.random() * charArray.length)];
+                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                        
+                        if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
+                        
+                        drops[i]++;
+                    }
+                }
+                
+                setInterval(draw, 33);
+                
+                window.addEventListener('resize', resizeCanvas);
+            }
+            
+            // Create floating particles
+            function createParticles() {
+                const container = document.getElementById('particlesContainer');
+                if (!container) return;
+                
+                const particleCount = 25;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    // Random properties
+                    const size = Math.random() * 2 + 1;
+                    const posX = Math.random() * 100;
+                    const delay = Math.random() * 15;
+                    const duration = Math.random() * 10 + 15;
+                    
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.left = `${posX}%`;
+                    particle.style.animationDelay = `${delay}s`;
+                    particle.style.animationDuration = `${duration}s`;
+                    
+                    container.appendChild(particle);
+                }
+            }
+            
+            // Mobile menu functionality
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mainNav = document.getElementById('mainNav');
+            
+            if (mobileMenuToggle && mainNav) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    mainNav.classList.toggle('active');
+                    const icon = this.querySelector('i');
+                    if (mainNav.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                        this.setAttribute('aria-expanded', 'true');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                        this.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (mainNav && mainNav.classList.contains('active') && 
+                    !mainNav.contains(event.target) && 
+                    mobileMenuToggle && !mobileMenuToggle.contains(event.target)) {
+                    mainNav.classList.remove('active');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+            
+            // Close mobile menu on escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && mainNav && mainNav.classList.contains('active')) {
+                    mainNav.classList.remove('active');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+            
+            // Hero typing animation
+            const heroText = document.getElementById('heroText');
+            if (heroText) {
+                const originalHeroText = "Services & Solutions";
+                heroText.innerHTML = '';
+                
+                let heroIndex = 0;
+                function typeHero() {
+                    if (heroIndex < originalHeroText.length) {
+                        heroText.innerHTML += originalHeroText.charAt(heroIndex);
+                        heroIndex++;
+                        setTimeout(typeHero, 120);
+                    } else {
+                        heroText.innerHTML += '<span class="cursor"></span>';
+                    }
+                }
+                
+                // Start typing effect after a short delay
+                setTimeout(typeHero, 800);
+            }
+            
+            // Terminal command typing animation
+            const typingCommand = document.getElementById('typingCommand');
+            if (typingCommand) {
+                const commands = [
+                    "ls -la services/",
+                    "cat pricing.txt",
+                    "npm run services",
+                    "git checkout services",
+                    "docker-compose up services",
+                    "node services.js"
+                ];
+                let commandIndex = 0;
+                let charIndex = 0;
+                
+                function typeCommand() {
+                    if (charIndex < commands[commandIndex].length) {
+                        typingCommand.textContent += commands[commandIndex].charAt(charIndex);
+                        charIndex++;
+                        setTimeout(typeCommand, 50);
+                    } else {
+                        setTimeout(() => {
+                            typingCommand.textContent = '';
+                            charIndex = 0;
+                            commandIndex = (commandIndex + 1) % commands.length;
+                            setTimeout(typeCommand, 800);
+                        }, 2000);
+                    }
+                }
+                
+                // Start command typing after a delay
+                setTimeout(typeCommand, 3000);
+            }
+            
+            // Start background effects
+            setTimeout(createMatrixBackground, 100);
+            setTimeout(createParticles, 200);
+            
+            // Scroll to top functionality
+            const scrollTopBtn = document.getElementById('scrollTop');
+            
+            if (scrollTopBtn) {
+                window.addEventListener('scroll', function() {
+                    if (window.pageYOffset > 300) {
+                        scrollTopBtn.classList.add('visible');
+                    } else {
+                        scrollTopBtn.classList.remove('visible');
+                    }
+                });
+                
+                scrollTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            // Loading bar animation
+            const loadingBar = document.getElementById('loadingBar');
+            if (loadingBar) {
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 2;
+                    loadingBar.style.width = progress + '%';
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            loadingBar.style.opacity = '0';
+                            setTimeout(() => {
+                                loadingBar.style.display = 'none';
+                            }, 500);
+                        }, 500);
+                    }
+                }, 30);
+            }
+            
+            // Add animation to elements when they come into view
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe service cards and process steps
+            const animatedElements = document.querySelectorAll('.service-card, .process-step');
+            animatedElements.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(30px)';
+                element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(element);
+            });
+            
+            // Service CTA button interactions
+            document.querySelectorAll('.service-cta').forEach(button => {
+                button.addEventListener('click', function() {
+                    const serviceTitle = this.closest('.service-card').querySelector('.service-title').textContent;
+                    alert(`Thank you for your interest in ${serviceTitle}! I'll contact you shortly to discuss your project.`);
+                });
+            });
+            
+            // Main CTA button interaction
+            const ctaButton = document.querySelector('.cta-button');
+            if (ctaButton) {
+                ctaButton.addEventListener('click', function() {
+                    alert("Let's discuss your project! Please email me at contact@darkterminal.dev or use the contact form.");
+                });
+            }
+            
+            // Handle responsive images (if any were added in the future)
+            document.querySelectorAll('img').forEach(img => {
+                img.loading = 'lazy';
+            });
+            
+            // Performance optimization: Reduce animations if user prefers reduced motion
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelectorAll('*').forEach(el => {
+                    el.style.animationPlayState = 'paused';
+                });
+            }
+            
+            // Simulate visitor count
+            const visitorCount = document.getElementById('visitorCount');
+            if (visitorCount) {
+                let count = 10023;
+                setInterval(() => {
+                    count++;
+                    visitorCount.textContent = count.toString().padStart(6, '0');
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
